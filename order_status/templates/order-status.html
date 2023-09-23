@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>PSRESTful API: Order Status Example</title>
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+</head>
+<body>
+<div class="content py-5 px-5">
+    <h1>Order Status Example</h1>
+    <form class="form">
+
+        <div class="mb-3">
+            <label for="supplier_code">Supplier:</label>
+
+            <select name="supplier" required id="supplier_code">
+                <option value="" selected>---------</option>
+                <option value="alphabroder">Alphabroder</option>
+                <option value="GEM">Gemline</option>
+                <option value="HIT">Hit Promotional Products</option>
+                <option value="PCNA">PCNA</option>
+            </select>
+        </div>
+        <div class="mb-3">
+
+            <label for="environment">Environment:</label>
+
+            <select name="environment" id="environment">
+                <option value="PROD" selected>PROD</option>
+                <option value="STAGING">STAGING</option>
+
+            </select>
+
+        </div>
+
+        <div class="mb-3">
+
+            <label for="status_timestamp">Status timestamp:</label>
+            <input type="text" name="status_timestamp" id="status_timestamp">
+
+        </div>
+        <div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+
+    </form>
+    <div class="mt-5" style="display: none" id="result">
+        <h2>Result</h2>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Index</th>
+                <th scope="col">Purchase Order Number</th>
+                <th scope="col">Order Status Detail Array</th>
+            </thead>
+            <tbody id="result-body">
+            </tbody>
+        </table>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+            crossorigin="anonymous"></script>
+    <script>
+        let button = document.querySelector('button[type="submit"]');
+        button.addEventListener('click', function (event) {
+            event.preventDefault();
+            let supplierCode = $('#supplier_code').val();
+            let environment = $('#environment').val();
+            let statusTimestamp = $('#status_timestamp').val();
+
+            $.ajax({
+                url: `/orders/`,
+                type: 'GET',
+                data: {
+                    "supplier_code": supplierCode,
+                    "environment": environment,
+                    "status_timestamp": statusTimestamp
+                },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                success: function (result) {
+                    console.log(result);
+                    $('#result').show();
+                    $('#result-body').empty();
+                    $.each(result.OrderStatusArray.OrderStatus, function (ix, value) {
+                        const purchaseOrderNumber = value.purchaseOrderNumber;
+                        const OrderStatusDetailArray = value.OrderStatusDetailArray;
+                        let row = `<tr>
+                            <td>${ix}</td>
+                            <td>${purchaseOrderNumber}</td>
+                            <td>${JSON.stringify(OrderStatusDetailArray)}</td>
+                        </tr>`;
+                        $('#result-body').append(row);
+                    });
+                }
+
+            });
+
+        });
+    </script>
+</body>
+</html>
