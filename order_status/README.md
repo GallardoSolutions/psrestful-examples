@@ -15,3 +15,11 @@ pip install -r requirements.txt
 - enter your supplier password at least for one Supplier 
 - run uvicorn main:app --port 8000 --host 0.0.0.0 --workers 1
 - Open http://localhost:8000/ in your browser
+
+# Tools used
+
+- [FastAPI](https://fastapi.tiangolo.com/)
+- [Jinja2](https://jinja.palletsprojects.com/en/2.11.x/)
+- [PSRESTful](https://psrestful.com)
+- [Bootstrap](https://getbootstrap.com/)
+- [JQuery](https://jquery.com/)
