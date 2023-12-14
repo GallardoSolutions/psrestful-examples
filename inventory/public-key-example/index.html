@@ -1,0 +1,2769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Example of how to use PSRESTFUL API to get real-time inventory from Promotional
+     Industry Suppliers implementing PromoStandards using public key, no backend needed">
+    <title>Inventory Levels Example(No Backend needed)</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 20px;
+            padding: 0;
+        }
+
+    </style>
+    <script src="//unpkg.com/alpinejs" defer></script>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+
+</head>
+<body>
+<div class="container py-2">
+    <h1 class="text-center">Inventory Levels Example(public key example)</h1>
+    <p>Get real-time inventory by supplier code, environment.</p>
+    <p>Example assumes you already have a backend that have products, variants, images, and prices</p>
+    <p>It will use the real-time inventory to display inventory on Product Detail Page and prevent selling a variant
+        that is not available right now</p>
+    <h1 class="text-left px-5">Products</h1>
+    <div class="container">
+        <div class="row">
+            <!-- Table Column (Full width on small screens) -->
+            <div class="col-12 col-md-3">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Product ID</th>
+                        <th>Name</th>
+                    </tr>
+                    </thead>
+                    <tbody id="productTableBody">
+                    <!-- Rows will be added here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-12 col-md-9" id="detail">
+                <h1 class="text-center">Detail</h1>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Jquery JS -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+<script>
+    const products = [
+        {
+            productId: '7163',
+            name: '14 Oz. Tall Campfire Mug',
+            description: 'Retro Granite Design. Elongated Handle. Meets FDA Requirements. Hand Wash Recommended.',
+            supplierCode: 'HIT',
+            "ProductPartArray": {
+                "ProductPart": [
+                    {
+                        "partId": "7163BLK",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "4.6250",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "0.89"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2028-01-15T00:00:00",
+                        "effectiveDate": "2018-01-15T14:06:14",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "BLACK",
+                                    "hex": "000000",
+                                    "approximatePms": "Black",
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "7E",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "21.0000",
+                                    "height": "17.0000",
+                                    "width": "16.0000",
+                                    "weightUom": "LB",
+                                    "weight": "32.0000"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "partId": "7163COB",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "4.6250",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "0.89"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2028-01-15T00:00:00",
+                        "effectiveDate": "2018-01-15T14:06:14",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "COBALT BLUE",
+                                    "hex": "3c4378",
+                                    "approximatePms": null,
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "7E",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "21.0000",
+                                    "height": "17.0000",
+                                    "width": "16.0000",
+                                    "weightUom": "LB",
+                                    "weight": "32.0000"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "partId": "7163GRA",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "4.6250",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "0.89"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2028-01-15T00:00:00",
+                        "effectiveDate": "2018-01-15T14:06:14",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "GRAY",
+                                    "hex": "C4BCB7",
+                                    "approximatePms": "406",
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "7E",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "21.0000",
+                                    "height": "17.0000",
+                                    "width": "16.0000",
+                                    "weightUom": "LB",
+                                    "weight": "32.0000"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "partId": "7163GRN",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "4.6250",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "0.89"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2028-01-15T00:00:00",
+                        "effectiveDate": "2018-01-15T14:06:14",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "GREEN",
+                                    "hex": "009A44",
+                                    "approximatePms": "347",
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "7E",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "21.0000",
+                                    "height": "17.0000",
+                                    "width": "16.0000",
+                                    "weightUom": "LB",
+                                    "weight": "32.0000"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "partId": "7163LEM",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "4.6250",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "0.89"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2028-01-15T00:00:00",
+                        "effectiveDate": "2018-01-15T14:06:14",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "LEMON",
+                                    "hex": "FFCD00",
+                                    "approximatePms": "116",
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "7E",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "21.0000",
+                                    "height": "17.0000",
+                                    "width": "16.0000",
+                                    "weightUom": "LB",
+                                    "weight": "32.0000"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "partId": "7163LIM",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "4.6250",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "0.89"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2028-01-15T00:00:00",
+                        "effectiveDate": "2018-01-15T14:06:14",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "LIME",
+                                    "hex": "97D700",
+                                    "approximatePms": "375",
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "7E",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "21.0000",
+                                    "height": "17.0000",
+                                    "width": "16.0000",
+                                    "weightUom": "LB",
+                                    "weight": "32.0000"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "partId": "7163ORN",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "4.6250",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "0.89"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2028-01-15T00:00:00",
+                        "effectiveDate": "2018-01-15T14:06:14",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "ORANGE",
+                                    "hex": "FE5000",
+                                    "approximatePms": "021",
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "7E",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "21.0000",
+                                    "height": "17.0000",
+                                    "width": "16.0000",
+                                    "weightUom": "LB",
+                                    "weight": "32.0000"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "partId": "7163RED",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "4.6250",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "0.89"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2028-01-15T00:00:00",
+                        "effectiveDate": "2018-01-15T14:06:14",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "RED",
+                                    "hex": "C8102E",
+                                    "approximatePms": "186",
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "7E",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "21.0000",
+                                    "height": "17.0000",
+                                    "width": "16.0000",
+                                    "weightUom": "LB",
+                                    "weight": "32.0000"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "partId": "7163ROY",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "4.6250",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "0.89"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2028-01-15T00:00:00",
+                        "effectiveDate": "2018-01-15T14:06:14",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "ROYAL BLUE",
+                                    "hex": "4169e1",
+                                    "approximatePms": null,
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "7E",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "21.0000",
+                                    "height": "17.0000",
+                                    "width": "16.0000",
+                                    "weightUom": "LB",
+                                    "weight": "32.0000"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "partId": "7163WHT",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "4.6250",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "0.89"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2028-01-15T00:00:00",
+                        "effectiveDate": "2018-01-15T14:06:14",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "WHITE",
+                                    "hex": "FFFFFF",
+                                    "approximatePms": "White",
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "7E",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "21.0000",
+                                    "height": "17.0000",
+                                    "width": "16.0000",
+                                    "weightUom": "LB",
+                                    "weight": "32.0000"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+        },
+        {
+            productId: "1625-22",
+            name: "Moscow Mule Mug 4-in-1 Gift Set",
+            description:
+                "4-in-1 gift set inspired by the popular Moscow Mule cocktail. Includes 2 mule mugs, 1 bar spoon and 1 measuring jigger.  Stainless steel construction with copper coating.  Gift box features a robust history of the cocktail and a recipe card is included.  Each mug is 14oz. 0.65oz/1.35oz jigger."
+            ,
+            supplierCode: 'PCNA',
+            "ProductPartArray": {
+                "ProductPart": [
+                    {
+                        "partId": "1625-22COP",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Stainless Steel",
+                        "shape": null,
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": "3.46",
+                            "height": "5.47",
+                            "width": "8.19",
+                            "weightUom": "LB",
+                            "weight": "0.88"
+                        },
+                        "leadTime": null,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": true,
+                        "endDate": null,
+                        "effectiveDate": "2021-01-01T05:00:00",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": null,
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": null,
+                        "isHazmat": null,
+                        "primaryColor": {
+                            "Color": {
+                                "colorName": "Copper",
+                                "hex": "C87533",
+                                "approximatePms": "PMS4655",
+                                "standardColorName": "Metallic"
+                            }
+                        },
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "Copper",
+                                    "hex": "C87533",
+                                    "approximatePms": "PMS4655",
+                                    "standardColorName": "Metallic"
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": {
+                            "ProductPackage": [
+                                {
+                                    "default": false,
+                                    "packageType": "Gift Box",
+                                    "description": "FSC certified premium gift box",
+                                    "quantity": "18",
+                                    "dimensionUom": "IN",
+                                    "depth": "25.20",
+                                    "height": "6.30",
+                                    "width": "21.70",
+                                    "weightUom": "LB",
+                                    "weight": "20.60"
+                                }
+                            ]
+                        },
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Master Carton",
+                                    "description": null,
+                                    "quantity": "18",
+                                    "dimensionUom": "IN",
+                                    "depth": "25.19",
+                                    "height": "5.90",
+                                    "width": "22.04",
+                                    "weightUom": "LB",
+                                    "weight": "18.73"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+        },
+        {
+            productId: '7133',
+            name: '15 OZ. CAMPFIRE MUG',
+            description: "Retro Granite Design. Meets FDA Requirements. Hand Wash Recommended. Not Recommended for Commercial Use.",
+            supplierCode: 'HIT',
+            "ProductPartArray": {
+                "ProductPart": [
+                    {
+                        "partId": "7133BLK",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "3.5000",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "1.22"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2028-01-01T00:00:00",
+                        "effectiveDate": "2018-01-15T13:40:16",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "BLACK",
+                                    "hex": "000000",
+                                    "approximatePms": "Black",
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "Y0",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "18.0000",
+                                    "height": "19.0000",
+                                    "width": "18.0000",
+                                    "weightUom": "LB",
+                                    "weight": "44.0000"
+                                },
+                                {
+                                    "packageType": "Box",
+                                    "description": "T7",
+                                    "quantity": "24.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "18.0000",
+                                    "height": "13.0000",
+                                    "width": "15.0000",
+                                    "weightUom": "LB",
+                                    "weight": "25.0000"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "partId": "7133COB",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "3.5000",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "1.22"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2028-01-01T00:00:00",
+                        "effectiveDate": "2018-01-15T13:40:16",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "COBALT BLUE",
+                                    "hex": "3c4378",
+                                    "approximatePms": null,
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "Y0",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "18.0000",
+                                    "height": "19.0000",
+                                    "width": "18.0000",
+                                    "weightUom": "LB",
+                                    "weight": "44.0000"
+                                },
+                                {
+                                    "packageType": "Box",
+                                    "description": "T7",
+                                    "quantity": "24.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "18.0000",
+                                    "height": "13.0000",
+                                    "width": "15.0000",
+                                    "weightUom": "LB",
+                                    "weight": "25.0000"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "partId": "7133GRA",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "3.5000",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "1.22"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2028-01-01T00:00:00",
+                        "effectiveDate": "2018-01-15T13:40:16",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "GRAY",
+                                    "hex": "C4BCB7",
+                                    "approximatePms": "406",
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "Y0",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "18.0000",
+                                    "height": "19.0000",
+                                    "width": "18.0000",
+                                    "weightUom": "LB",
+                                    "weight": "44.0000"
+                                },
+                                {
+                                    "packageType": "Box",
+                                    "description": "T7",
+                                    "quantity": "24.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "18.0000",
+                                    "height": "13.0000",
+                                    "width": "15.0000",
+                                    "weightUom": "LB",
+                                    "weight": "25.0000"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "partId": "7133GRN",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "3.5000",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "1.22"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2028-01-01T00:00:00",
+                        "effectiveDate": "2018-01-15T13:40:16",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "GREEN",
+                                    "hex": "009A44",
+                                    "approximatePms": "347",
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "Y0",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "18.0000",
+                                    "height": "19.0000",
+                                    "width": "18.0000",
+                                    "weightUom": "LB",
+                                    "weight": "44.0000"
+                                },
+                                {
+                                    "packageType": "Box",
+                                    "description": "T7",
+                                    "quantity": "24.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "18.0000",
+                                    "height": "13.0000",
+                                    "width": "15.0000",
+                                    "weightUom": "LB",
+                                    "weight": "25.0000"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "partId": "7133LIM",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "3.5000",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "1.22"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2028-01-01T00:00:00",
+                        "effectiveDate": "2018-01-15T13:40:16",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "LIME",
+                                    "hex": "97D700",
+                                    "approximatePms": "375",
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "Y0",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "18.0000",
+                                    "height": "19.0000",
+                                    "width": "18.0000",
+                                    "weightUom": "LB",
+                                    "weight": "44.0000"
+                                },
+                                {
+                                    "packageType": "Box",
+                                    "description": "T7",
+                                    "quantity": "24.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "18.0000",
+                                    "height": "13.0000",
+                                    "width": "15.0000",
+                                    "weightUom": "LB",
+                                    "weight": "25.0000"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "partId": "7133ORN",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "3.5000",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "1.22"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2028-01-01T00:00:00",
+                        "effectiveDate": "2018-01-15T13:40:16",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "ORANGE",
+                                    "hex": "FE5000",
+                                    "approximatePms": "021",
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "Y0",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "18.0000",
+                                    "height": "19.0000",
+                                    "width": "18.0000",
+                                    "weightUom": "LB",
+                                    "weight": "44.0000"
+                                },
+                                {
+                                    "packageType": "Box",
+                                    "description": "T7",
+                                    "quantity": "24.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "18.0000",
+                                    "height": "13.0000",
+                                    "width": "15.0000",
+                                    "weightUom": "LB",
+                                    "weight": "25.0000"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "partId": "7133RED",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "3.5000",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "1.22"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2028-01-01T00:00:00",
+                        "effectiveDate": "2018-01-15T13:40:16",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "RED",
+                                    "hex": "C8102E",
+                                    "approximatePms": "186",
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "Y0",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "18.0000",
+                                    "height": "19.0000",
+                                    "width": "18.0000",
+                                    "weightUom": "LB",
+                                    "weight": "44.0000"
+                                },
+                                {
+                                    "packageType": "Box",
+                                    "description": "T7",
+                                    "quantity": "24.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "18.0000",
+                                    "height": "13.0000",
+                                    "width": "15.0000",
+                                    "weightUom": "LB",
+                                    "weight": "25.0000"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "partId": "7133ROY",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "3.5000",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "1.22"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2028-01-01T00:00:00",
+                        "effectiveDate": "2018-01-15T13:40:16",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "ROYAL BLUE",
+                                    "hex": "4169e1",
+                                    "approximatePms": null,
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "Y0",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "18.0000",
+                                    "height": "19.0000",
+                                    "width": "18.0000",
+                                    "weightUom": "LB",
+                                    "weight": "44.0000"
+                                },
+                                {
+                                    "packageType": "Box",
+                                    "description": "T7",
+                                    "quantity": "24.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "18.0000",
+                                    "height": "13.0000",
+                                    "width": "15.0000",
+                                    "weightUom": "LB",
+                                    "weight": "25.0000"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "partId": "7133WHT",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "3.5000",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "1.22"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2028-01-01T00:00:00",
+                        "effectiveDate": "2018-01-15T13:40:16",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "WHITE",
+                                    "hex": "FFFFFF",
+                                    "approximatePms": "White",
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "Y0",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "18.0000",
+                                    "height": "19.0000",
+                                    "width": "18.0000",
+                                    "weightUom": "LB",
+                                    "weight": "44.0000"
+                                },
+                                {
+                                    "packageType": "Box",
+                                    "description": "T7",
+                                    "quantity": "24.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "18.0000",
+                                    "height": "13.0000",
+                                    "width": "15.0000",
+                                    "weightUom": "LB",
+                                    "weight": "25.0000"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "partId": "7133YEL",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "3.5000",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "1.22"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2028-01-01T00:00:00",
+                        "effectiveDate": "2018-01-15T13:40:16",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "YELLOW",
+                                    "hex": "FFCD00",
+                                    "approximatePms": "116",
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "Y0",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "18.0000",
+                                    "height": "19.0000",
+                                    "width": "18.0000",
+                                    "weightUom": "LB",
+                                    "weight": "44.0000"
+                                },
+                                {
+                                    "packageType": "Box",
+                                    "description": "T7",
+                                    "quantity": "24.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "18.0000",
+                                    "height": "13.0000",
+                                    "width": "15.0000",
+                                    "weightUom": "LB",
+                                    "weight": "25.0000"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "partId": "7133PUR",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "3.5000",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "1.22"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2028-01-01T00:00:00",
+                        "effectiveDate": "2018-01-15T13:40:16",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "PURPLE",
+                                    "hex": "9B26B6",
+                                    "approximatePms": "2592",
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "Y0",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "18.0000",
+                                    "height": "19.0000",
+                                    "width": "18.0000",
+                                    "weightUom": "LB",
+                                    "weight": "44.0000"
+                                },
+                                {
+                                    "packageType": "Box",
+                                    "description": "T7",
+                                    "quantity": "24.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "18.0000",
+                                    "height": "13.0000",
+                                    "width": "15.0000",
+                                    "weightUom": "LB",
+                                    "weight": "25.0000"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "partId": "7133TEA",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "3.5000",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "1.22"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2028-01-01T00:00:00",
+                        "effectiveDate": "2018-01-15T13:40:16",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "TEAL",
+                                    "hex": "008080",
+                                    "approximatePms": "320",
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "Y0",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "18.0000",
+                                    "height": "19.0000",
+                                    "width": "18.0000",
+                                    "weightUom": "LB",
+                                    "weight": "44.0000"
+                                },
+                                {
+                                    "packageType": "Box",
+                                    "description": "T7",
+                                    "quantity": "24.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "18.0000",
+                                    "height": "13.0000",
+                                    "width": "15.0000",
+                                    "weightUom": "LB",
+                                    "weight": "25.0000"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "partId": "7133PNK",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "3.5000",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "1.22"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2028-01-01T00:00:00",
+                        "effectiveDate": "2018-01-15T13:40:16",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "PINK",
+                                    "hex": "F4A6D7",
+                                    "approximatePms": "230",
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "Y0",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "18.0000",
+                                    "height": "19.0000",
+                                    "width": "18.0000",
+                                    "weightUom": "LB",
+                                    "weight": "44.0000"
+                                },
+                                {
+                                    "packageType": "Box",
+                                    "description": "T7",
+                                    "quantity": "24.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "18.0000",
+                                    "height": "13.0000",
+                                    "width": "15.0000",
+                                    "weightUom": "LB",
+                                    "weight": "25.0000"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "partId": "7133BRN",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "3.5000",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "1.22"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2028-01-01T00:00:00",
+                        "effectiveDate": "2018-01-15T13:40:16",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "BROWN",
+                                    "hex": "703F2A",
+                                    "approximatePms": "478",
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "Y0",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "18.0000",
+                                    "height": "19.0000",
+                                    "width": "18.0000",
+                                    "weightUom": "LB",
+                                    "weight": "44.0000"
+                                },
+                                {
+                                    "packageType": "Box",
+                                    "description": "T7",
+                                    "quantity": "24.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "18.0000",
+                                    "height": "13.0000",
+                                    "width": "15.0000",
+                                    "weightUom": "LB",
+                                    "weight": "25.0000"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "partId": "7133MAR",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "3.5000",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "1.22"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2028-01-01T00:00:00",
+                        "effectiveDate": "2018-01-15T13:40:16",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "MAROON",
+                                    "hex": "862633",
+                                    "approximatePms": "202",
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "Y0",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "18.0000",
+                                    "height": "19.0000",
+                                    "width": "18.0000",
+                                    "weightUom": "LB",
+                                    "weight": "44.0000"
+                                },
+                                {
+                                    "packageType": "Box",
+                                    "description": "T7",
+                                    "quantity": "24.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "18.0000",
+                                    "height": "13.0000",
+                                    "width": "15.0000",
+                                    "weightUom": "LB",
+                                    "weight": "25.0000"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+        },
+        {
+            productId: '7125',
+            name: '11 OZ. COLORED STONEWARE MUG WITH C-HANDLE',
+            description: "Meets FDA Requirements. Hand Wash Recommended. Not Recommended for Commercial Use.",
+            supplierCode: 'HIT',
+            ProductPartArray: {
+                ProductPart: [
+                    {
+                        "partId": "7125ALM",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "3.7500",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "0.89"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2030-01-01T00:00:00",
+                        "effectiveDate": "2018-01-15T13:39:43",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "ALMOND",
+                                    "hex": "CBA052",
+                                    "approximatePms": null,
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "Y1",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "20.0000",
+                                    "height": "14.0000",
+                                    "width": "16.0000",
+                                    "weightUom": "LB",
+                                    "weight": "32.0000"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "partId": "7125BLK",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "3.7500",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "0.89"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2030-01-01T00:00:00",
+                        "effectiveDate": "2018-01-15T13:39:43",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "BLACK",
+                                    "hex": "000000",
+                                    "approximatePms": "Black",
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "Y1",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "20.0000",
+                                    "height": "14.0000",
+                                    "width": "16.0000",
+                                    "weightUom": "LB",
+                                    "weight": "32.0000"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "partId": "7125COB",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "3.7500",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "0.89"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2030-01-01T00:00:00",
+                        "effectiveDate": "2018-01-15T13:39:43",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "COBALT BLUE",
+                                    "hex": "3c4378",
+                                    "approximatePms": null,
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "Y1",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "20.0000",
+                                    "height": "14.0000",
+                                    "width": "16.0000",
+                                    "weightUom": "LB",
+                                    "weight": "32.0000"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "partId": "7125GRA",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "3.7500",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "0.89"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2030-01-01T00:00:00",
+                        "effectiveDate": "2018-01-15T13:39:43",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "GRAY",
+                                    "hex": "C4BCB7",
+                                    "approximatePms": "406",
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "Y1",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "20.0000",
+                                    "height": "14.0000",
+                                    "width": "16.0000",
+                                    "weightUom": "LB",
+                                    "weight": "32.0000"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "partId": "7125GRN",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "3.7500",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "0.89"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2030-01-01T00:00:00",
+                        "effectiveDate": "2018-01-15T13:39:43",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "GREEN",
+                                    "hex": "009A44",
+                                    "approximatePms": "347",
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "Y1",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "20.0000",
+                                    "height": "14.0000",
+                                    "width": "16.0000",
+                                    "weightUom": "LB",
+                                    "weight": "32.0000"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "partId": "7125LIM",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "3.7500",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "0.89"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2030-01-01T00:00:00",
+                        "effectiveDate": "2018-01-15T13:39:43",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "LIME",
+                                    "hex": "97D700",
+                                    "approximatePms": "375",
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "Y1",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "20.0000",
+                                    "height": "14.0000",
+                                    "width": "16.0000",
+                                    "weightUom": "LB",
+                                    "weight": "32.0000"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "partId": "7125OCNBLU",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "3.7500",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "0.89"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2030-01-01T00:00:00",
+                        "effectiveDate": "2018-01-15T13:39:43",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "OCEAN BLUE",
+                                    "hex": "5352a7",
+                                    "approximatePms": "3015",
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "Y1",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "20.0000",
+                                    "height": "14.0000",
+                                    "width": "16.0000",
+                                    "weightUom": "LB",
+                                    "weight": "32.0000"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "partId": "7125RED",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "3.7500",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "0.89"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2030-01-01T00:00:00",
+                        "effectiveDate": "2018-01-15T13:39:43",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "RED",
+                                    "hex": "C8102E",
+                                    "approximatePms": "186",
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "Y1",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "20.0000",
+                                    "height": "14.0000",
+                                    "width": "16.0000",
+                                    "weightUom": "LB",
+                                    "weight": "32.0000"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "partId": "7125WHTBLK",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "3.7500",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "0.89"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2030-01-01T00:00:00",
+                        "effectiveDate": "2018-01-15T13:39:43",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "WHITE WITH BLACK",
+                                    "hex": "FFFFFF",
+                                    "approximatePms": "White",
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "Y1",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "20.0000",
+                                    "height": "14.0000",
+                                    "width": "16.0000",
+                                    "weightUom": "LB",
+                                    "weight": "32.0000"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "partId": "7125WHTCOB",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "3.7500",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "0.89"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2030-01-01T00:00:00",
+                        "effectiveDate": "2018-01-15T13:39:43",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "WHITE WITH COBALT BLUE",
+                                    "hex": "FFFFFF",
+                                    "approximatePms": null,
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "Y1",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "20.0000",
+                                    "height": "14.0000",
+                                    "width": "16.0000",
+                                    "weightUom": "LB",
+                                    "weight": "32.0000"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "partId": "7125WHTLIM",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "3.7500",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "0.89"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2030-01-01T00:00:00",
+                        "effectiveDate": "2018-01-15T13:39:43",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "WHITE WITH LIME",
+                                    "hex": "FFFFFF",
+                                    "approximatePms": null,
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "Y1",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "20.0000",
+                                    "height": "14.0000",
+                                    "width": "16.0000",
+                                    "weightUom": "LB",
+                                    "weight": "32.0000"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "partId": "7125WHTOCN",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "3.7500",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "0.89"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2030-01-01T00:00:00",
+                        "effectiveDate": "2018-01-15T13:39:43",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "WHITE WITH OCEAN",
+                                    "hex": "FFFFFF",
+                                    "approximatePms": null,
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "Y1",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "20.0000",
+                                    "height": "14.0000",
+                                    "width": "16.0000",
+                                    "weightUom": "LB",
+                                    "weight": "32.0000"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "partId": "7125WHTORN",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "3.7500",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "0.89"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2030-01-01T00:00:00",
+                        "effectiveDate": "2018-01-15T13:39:43",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "WHITE WITH ORANGE",
+                                    "hex": "FFFFFF",
+                                    "approximatePms": null,
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "Y1",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "20.0000",
+                                    "height": "14.0000",
+                                    "width": "16.0000",
+                                    "weightUom": "LB",
+                                    "weight": "32.0000"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "partId": "7125WHTRED",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "3.7500",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "0.89"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2030-01-01T00:00:00",
+                        "effectiveDate": "2018-01-15T13:39:43",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "WHITE WITH RED",
+                                    "hex": "FFFFFF",
+                                    "approximatePms": null,
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "Y1",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "20.0000",
+                                    "height": "14.0000",
+                                    "width": "16.0000",
+                                    "weightUom": "LB",
+                                    "weight": "32.0000"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "partId": "7125YEL",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "3.7500",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "0.89"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2030-01-01T00:00:00",
+                        "effectiveDate": "2018-01-15T13:39:43",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "YELLOW",
+                                    "hex": "FFCD00",
+                                    "approximatePms": "116",
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "Y1",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "20.0000",
+                                    "height": "14.0000",
+                                    "width": "16.0000",
+                                    "weightUom": "LB",
+                                    "weight": "32.0000"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "partId": "7125MAR",
+                        "description": [],
+                        "countryOfOrigin": "CN",
+                        "primaryMaterial": "Ceramic",
+                        "shape": "MUG",
+                        "ApparelSize": null,
+                        "Dimension": {
+                            "dimensionUom": "IN",
+                            "depth": null,
+                            "height": "3.7500",
+                            "width": null,
+                            "weightUom": "LB",
+                            "weight": "0.89"
+                        },
+                        "leadTime": 5,
+                        "unspsc": null,
+                        "gtin": null,
+                        "isRushService": false,
+                        "endDate": "2030-01-01T00:00:00",
+                        "effectiveDate": "2018-01-15T13:39:43",
+                        "isCloseout": false,
+                        "isCaution": null,
+                        "cautionComment": null,
+                        "nmfcCode": "0.0000",
+                        "nmfcDescription": null,
+                        "nmfcNumber": null,
+                        "isOnDemand": false,
+                        "isHazmat": null,
+                        "primaryColor": null,
+                        "ColorArray": {
+                            "Color": [
+                                {
+                                    "colorName": "MAROON",
+                                    "hex": "862633",
+                                    "approximatePms": "202",
+                                    "standardColorName": null
+                                }
+                            ]
+                        },
+                        "ProductPackagingArray": null,
+                        "ShippingPackageArray": {
+                            "ShippingPackage": [
+                                {
+                                    "packageType": "Box",
+                                    "description": "Y1",
+                                    "quantity": "36.0000",
+                                    "dimensionUom": "IN",
+                                    "depth": "20.0000",
+                                    "height": "14.0000",
+                                    "width": "16.0000",
+                                    "weightUom": "LB",
+                                    "weight": "32.0000"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    ];
+
+
+    function genVariants(product) {
+        const parts = product.ProductPartArray.ProductPart;
+        const variants = parts.map(part => {
+            return {
+                partId: part.partId,
+                color: part.ColorArray.Color[0].colorName,
+                hex: part.ColorArray.Color[0].hex,
+                image: null
+            }
+        });
+
+        return variants.reduce((acc, variant) => (
+            acc + `<button class="btn border px-2" style="background-color: #${variant.hex}"
+                            onclick="showInventory('${product.productId}', '${variant.partId}');"
+                            >${variant.color}</button>`
+        ), '')
+    }
+
+
+    function showInventory(productId, partId) {
+        const product = products.find(product => product.productId === productId);
+        const part = product.ProductPartArray.ProductPart.find(part => part.partId === partId);
+        const inventory = document.getElementById('inventory');
+
+        $.ajax({
+                url: `https://api.psrestful.com/v2.0.0/suppliers/${product.supplierCode}/inventory/${product.productId}`,
+                type: 'GET',
+                data: {
+                    "pub_api_key": '2f434bb853174a3cb1560883cd33601f',
+                    "environment": 'prod'
+                },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                success: function (result) {
+                    console.log(result);
+                    inventory.innerHTML = `
+                    <h1>Inventory</h1>
+                    <h2>${part.partId}</h2>
+                    <h3>Success</h3>
+                    `;
+                }
+
+            });
+
+    }
+
+    function showDetail(productId) {
+        const product = products.find(product => product.productId === productId);
+        const detail = document.getElementById('detail');
+        // get name, description, and images from product
+        const variants = genVariants(product);
+        detail.innerHTML = `
+            <h1>${product.name}</h1>
+            <p>${product.description}</p>
+            <h4>Colors:</h4>
+            ${variants}
+            <div id="inventory"></div>
+            `;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const tableBody = document.getElementById('productTableBody');
+
+        products.forEach(product => {
+            let row = `<tr>
+                       <td><button class="btn border" onclick="showDetail('${product.productId}');">${product.productId}</button></td>
+                       <td>${product.name.substring(0, 15)}...</td>
+                   </tr>`;
+            tableBody.innerHTML += row;
+        });
+    });
+
+</script>
+</body>
+</html>
