@@ -1,0 +1,39 @@
+<div id="returned-sellable-products" class="py-2">
+    {% if error %}
+    <h1>Sorry, there was an error retrieving the products.</h1>
+    <p>Error code: {{ response_code }}</p>
+    <p>Error Message: {{ error }}</p>
+    {% else %}
+    <h1 class="text-center">Sellable Products</h1>
+    <p class="text-center">No Products: <strong>{{ no_products }}</strong></p>
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Product ID</th>
+                <th>Variants</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for product in products %}
+            <tr>
+             <td>
+                 <a href="#" hx-get="/inventory/{{supplier_code}}/{{product.productId}}?environment={{environment}}"
+                    hx-target="#inventory-result" data-toggle="modal" data-target="#result">
+                {{product.productId}}</a>
+             </td>
+                <td>
+                    <a href="#" hx-get="/inventory/{{supplier_code}}/{{product.productId}}?environment={{environment}}"
+                       hx-target="#inventory-result">
+                {{product.variants}}</a>
+                </td>
+
+            {% endfor %}
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+</div>

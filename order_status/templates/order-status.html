@@ -15,14 +15,13 @@
 <body>
 <div class="content py-5 px-5">
     <h1>Order Status Example</h1>
+    <p>Get order status by supplier code, environment and status timestamp</p>
     <form class="form">
 
         <div class="mb-3">
             <label for="supplier_code">Supplier:</label>
-
             <select name="supplier" required id="supplier_code">
                 <option value="" selected>---------</option>
-                <option value="alphabroder">Alphabroder</option>
                 <option value="GEM">Gemline</option>
                 <option value="HIT">Hit Promotional Products</option>
                 <option value="PCNA">PCNA</option>
@@ -31,11 +30,9 @@
         <div class="mb-3">
 
             <label for="environment">Environment:</label>
-
             <select name="environment" id="environment">
                 <option value="PROD" selected>PROD</option>
                 <option value="STAGING">STAGING</option>
-
             </select>
 
         </div>
