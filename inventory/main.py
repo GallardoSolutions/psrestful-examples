@@ -28,14 +28,8 @@ async def home(request: Request):
 @app.get("/products")
 async def get_products(request: Request, supplier_code: str, environment: str):
     url = f"{PS_RESTFUL_HOST}/v2.0.0/suppliers/{supplier_code}/sellable-products/"
-    data = {
-        'environment': environment
-    }
-    headers = {
-        'x-api-key': PS_RESTFUL_KEY,
-        "accept": "application/json"
-    }
-    response = requests.get(url, params=data, headers=headers)
+    params = dict(environment=environment)
+    response = requests.get(url, params=params, headers=gen_headers())
     context = {'response_code': response.status_code, 'environment': environment, 'supplier_code': supplier_code}
     if response.status_code == 200:
         all_variants = response.json()['ProductSellableArray']['ProductSellable']
@@ -57,22 +51,28 @@ async def get_products(request: Request, supplier_code: str, environment: str):
 @app.get("/inventory/{supplier_code}/{product_id}")
 async def inventory(request: Request, supplier_code: str, product_id: str, environment: str):
     url = f"{PS_RESTFUL_HOST}/v2.0.0/suppliers/{supplier_code}/inventory/{product_id}"
-    data = {
-        'environment': environment
-    }
-    headers = {
-        'x-api-key': PS_RESTFUL_KEY,
-        "accept": "application/json"
-    }
-    response = requests.get(url, params=data, headers=headers)
+    params = dict(environment=environment)
+    response = requests.get(url, params=params, headers=gen_headers())
     context = {'response_code': response.status_code, 'request': request, 'environment': environment,
                'supplier_code': supplier_code, 'product_id': product_id, 'error': None}
     if response.status_code == 200:
         data = response.json()
-        context['PartInventory'] = data['Inventory']['PartInventoryArray']['PartInventory']
-        for inv in context['PartInventory']:
-            inv['lastModified'] = datetime.fromisoformat(inv['lastModified'])
+        context['PartInventory'] = gen_part_inventory_array(data['Inventory']['PartInventoryArray']['PartInventory'])
 
     else:
         context['error'] = response.text
     return templates.TemplateResponse("inventory.html", context)
+
+
+def gen_headers():
+    headers = {
+        'x-api-key': PS_RESTFUL_KEY,
+        "accept": "application/json"
+    }
+    return headers
+
+
+def gen_part_inventory_array(part_inventory: list) -> list:
+    for inv in part_inventory:
+        inv['lastModified'] = datetime.fromisoformat(inv['lastModified'])
+    return part_inventory
