@@ -3,6 +3,7 @@
 Showcasing examples on how to use [PSRESTful API](https://psrestful.com), an API based on PromoStandards.
 
 - [Order Status Example](order_status/README.md)
+- [Real-time Inventory Example](inventory/README.md)
 
 
 ## Documentation

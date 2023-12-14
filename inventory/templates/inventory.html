@@ -1,41 +1,32 @@
-<div class="modal" tabindex="1" id="result">
-    <div class="modal-dialog modal-fullscreen-sm-down">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Inventory for {{supplier_code}} - {{ product_id }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<div id="result-content">
+    <div id="result-header">
+        <h5 class="modal-title text-center">Inventory for {{supplier_code}} - {{ product_id }}</h5>
+
+    </div>
+    <div class="modal-body">
+        <div class="inventory-container">
+            {% if response_code == 200 %}
+            {% for part_inventory in PartInventory %}
+            <div class="jacket-card">
+                <h2 class="jacket-title">{{ part_inventory.partDescription }}</h2>
+                <p class="jacket-info">Part ID: {{ part_inventory.partId }}</p>
+                <p class="jacket-info">Color: {{ part_inventory.partColor }}</p>
+                <p class="jacket-info">Size: {{ part_inventory.labelSize or '-' }}</p>
+                <p class="jacket-info">Quantity Available: {{ part_inventory.quantityAvailable.Quantity.value
+                    }}</p>
+                <p class="jacket-info">Manufactured Item: {{ part_inventory.manufacturedItem }}</p>
+                <p class="jacket-info">Buy To Order: {{ part_inventory.buyToOrder }}</p>
+                <p class="jacket-info">Replenishment LeadTime: {{ part_inventory.replenishmentLeadTime or '-' }}</p>
+                <p class="jacket-info">Attribute Selection: {{ part_inventory.attributeSelection or '-' }}</p>
+                <p class="jacket-info">Last Modified: {{ part_inventory.lastModified | humanize_ts }}</p>
             </div>
-            <div class="modal-body">
-                <div class="inventory-container">
-                    {% if response_code == 200 %}
-                    {% for part_inventory in PartInventory %}
-                    <div class="jacket-card">
-                        <h2 class="jacket-title">{{ part_inventory.partDescription }}</h2>
-                        <p class="jacket-info">Part ID: {{ part_inventory.partId }}</p>
-                        <p class="jacket-info">Color: {{ part_inventory.partColor }}</p>
-                        <p class="jacket-info">Size: {{ part_inventory.labelSize or '-' }}</p>
-                        <p class="jacket-info">Quantity Available: {{ part_inventory.quantityAvailable.Quantity.value
-                            }}</p>
-                        <p class="jacket-info">Manufactured Item: {{ part_inventory.manufacturedItem }}</p>
-                        <p class="jacket-info">Buy To Order: {{ part_inventory.buyToOrder }}</p>
-                        <p class="jacket-info">Replenishment LeadTime: {{ part_inventory.replenishmentLeadTime or '-' }}</p>
-                        <p class="jacket-info">Attribute Selection: {{ part_inventory.attributeSelection  or '-' }}</p>
-                        <p class="jacket-info">Last Modified: {{ part_inventory.lastModified | humanize_ts }}</p>
-                    </div>
-                    {% endfor %}
-                    {% else %}
-                    <h1>Sorry, there was an error retrieving the inventory.</h1>
-                    <p>Error code: {{ response_code }}</p>
-                    <p>Error Message: {{ error }}</p>
-                    {% endif %}
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
+            {% endfor %}
+            {% else %}
+            <h1>Sorry, there was an error retrieving the inventory.</h1>
+            <p>Error code: {{ response_code }}</p>
+            <p>Error Message: {{ error }}</p>
+            {% endif %}
         </div>
     </div>
 </div>
-<script>
-    $('#result').toggle();
-</script>
+

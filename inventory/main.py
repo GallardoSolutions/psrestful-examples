@@ -11,13 +11,14 @@ from utils import gen_all_products
 config_env = Config('.env')
 
 PS_RESTFUL_KEY = config_env.get("PS_RESTFUL_KEY", default="p")
-PS_RESTFUL_HOST = 'https://api.psrestful.com'
+PS_RESTFUL_HOST = config_env.get("PS_RESTFUL_HOST", default="https://api.psrestful.com")
 
 app = FastAPI(debug=True)
 
 templates = Jinja2Templates(directory="templates")
 
 templates.env.filters["humanize_ts"] = humanize_ts
+
 
 @app.get("/")
 async def home(request: Request):

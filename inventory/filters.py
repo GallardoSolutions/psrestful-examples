@@ -9,7 +9,7 @@ def humanize_ts(value):
     """
     now = datetime.now(timezone.utc)
     start = value if isinstance(value, datetime) else datetime.fromtimestamp(value)
-    diff = now - start
+    diff = now - start.astimezone(timezone.utc)
     second_diff = diff.seconds
     day_diff = diff.days
 
@@ -34,7 +34,7 @@ def humanize_ts(value):
     if day_diff < 7:
         return str(day_diff) + " days ago"
     if day_diff < 31:
-        return str(int(day_diff / 7)) + " weeks ago"
+        return str(int(day_diff / 7)) + " week(s) ago"
     if day_diff < 365:
         return str(int(day_diff / 30)) + " months ago"
     return str(int(day_diff / 365)) + " years ago"
