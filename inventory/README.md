@@ -49,3 +49,8 @@ pip install -r requirements.txt
 ## List of supported suppliers
 
 [Integrated Suppliers](https://psrestful.com/integrated-suppliers/)
+
+
+## Screenshots
+
+![Real-time-Inventory](screenshots/real-time-inventory-using-fast-api.png)

@@ -23,3 +23,10 @@ Showcasing examples on how to use [PSRESTful API](https://psrestful.com), an API
 - [Jinja2](https://jinja.palletsprojects.com/en/2.11.x/)
 - [Htmx](https://www.htmx.org/)
 - [Alpine.js](https://alpinejs.dev/)
+
+
+## Screenshots
+
+### Inventory Example
+
+![Real-time-inventory](inventory/screenshots/real-time-inventory-using-fast-api.png)
