@@ -35,12 +35,14 @@
     <div class="container">
         <div class="row">
             <!-- Table Column (Full width on small screens) -->
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-4">
                 <table class="table">
                     <thead>
                     <tr>
-                        <th>Product ID</th>
-                        <th>Name</th>
+                        <th class="col">Supplier Code</th>
+                        <th class="col">Product ID</th>
+                        <th class="col">Name</th>
+
                     </tr>
                     </thead>
                     <tbody id="productTableBody">
@@ -48,7 +50,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="col-12 col-md-9" id="detail">
+            <div class="col-12 col-md-8" id="detail">
                 <h1 class="text-center">Detail</h1>
 
             </div>
@@ -2702,7 +2704,7 @@
         });
 
         return variants.reduce((acc, variant) => (
-            acc + `<button class="btn border px-2" style="background-color: #${variant.hex}"
+            acc + `<button class="btn border" style="background-color: #${variant.hex}; margin-right: 5px;"
                             onclick="showInventory('${product.productId}', '${variant.partId}');"
                             >${variant.color}</button>`
         ), '')
@@ -2711,30 +2713,31 @@
 
     function showInventory(productId, partId) {
         const product = products.find(product => product.productId === productId);
-        const part = product.ProductPartArray.ProductPart.find(part => part.partId === partId);
         const inventory = document.getElementById('inventory');
 
         $.ajax({
-                url: `https://api.psrestful.com/v2.0.0/suppliers/${product.supplierCode}/inventory/${product.productId}`,
-                type: 'GET',
-                data: {
-                    "pub_api_key": '2f434bb853174a3cb1560883cd33601f',
-                    "environment": 'prod'
-                },
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-                success: function (result) {
-                    console.log(result);
-                    inventory.innerHTML = `
-                    <h1>Inventory</h1>
-                    <h2>${part.partId}</h2>
-                    <h3>Success</h3>
-                    `;
-                }
-
-            });
+            url: `https://api.psrestful.com/v2.0.0/suppliers/${product.supplierCode}/inventory/${product.productId}`,
+            type: 'GET',
+            data: {
+                "pub_api_key": '2f434bb853174a3cb1560883cd33601f',
+                "environment": 'PROD'
+            },
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+            success: function (result) {
+                const partInv = result.Inventory.PartInventoryArray.PartInventory.find(inv => inv.partId === partId);
+                const qty = partInv.quantityAvailable.Quantity;
+                inventory.innerHTML = `
+                <h1>Inventory</h1>
+                <p>${qty.value}(${qty.uom})</p>
+                `;
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
 
     }
 
@@ -2757,8 +2760,10 @@
 
         products.forEach(product => {
             let row = `<tr>
+                       <td>${product.supplierCode}</td>
                        <td><button class="btn border" onclick="showDetail('${product.productId}');">${product.productId}</button></td>
                        <td>${product.name.substring(0, 15)}...</td>
+
                    </tr>`;
             tableBody.innerHTML += row;
         });

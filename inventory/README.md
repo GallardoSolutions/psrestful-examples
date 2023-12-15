@@ -1,8 +1,14 @@
 # Inventory Examples
 
 # Two options:
-- A FastAPI project to check inventory levels in real time
 - A single html that will check inventory levels in real time(example of Public key usage)
+- A FastAPI project to check inventory levels in real time(this one)
+
+## Real-time Inventory Example using Public Key
+
+[README.md](public-key-example/README.md)
+
+## Real-time Inventory Example using Fast API
 
 ## What is this code about?
 
