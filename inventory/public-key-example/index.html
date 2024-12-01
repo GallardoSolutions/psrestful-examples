@@ -2714,9 +2714,11 @@
     function showInventory(productId, partId) {
         const product = products.find(product => product.productId === productId);
         const inventory = document.getElementById('inventory');
+        // const apiHost = 'https://api.psrestful.com';
+        const apiHost = 'http://localhost:9002';
 
         $.ajax({
-            url: `https://api.psrestful.com/v2.0.0/suppliers/${product.supplierCode}/inventory/${product.productId}`,
+            url: `${apiHost}/v2.0.0/suppliers/${product.supplierCode}/inventory/${product.productId}`,
             type: 'GET',
             data: {
                 "pub_api_key": '2f434bb853174a3cb1560883cd33601f',
