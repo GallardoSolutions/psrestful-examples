@@ -1,0 +1,32 @@
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white text-center">
+            <h3>Parts sorted</h3>
+        </div>
+        <div class="card-body">
+            <p>Total Parts: <strong>{{ response.count }}</strong></p>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead class="thead-light">
+                    <tr>
+                        <th>Part ID</th>
+                        <th>Color</th>
+                        <th>Size</th>
+                        <th class="text-end">Total Sales</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for p in response.parts %}
+                    <tr>
+                        <td>{{p.part_id}}</td>
+                        <td>{{p.color}}</td>
+                        <td>{{p.size}}</td>
+                        <td class="text-end">{{p.total_sales}}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
