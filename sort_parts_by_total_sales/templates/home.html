@@ -15,7 +15,7 @@
 </head>
 <body>
 <div class="content py-5 px-5">
-    <h1>Sort Part by total sales  Example</h1>
+    <h1>Sort Part by total sales Example</h1>
     <p class="text-muted">Given past days sort parts based on total sales</p>
     <form class="form" method="get"
           hx-get="sorted-parts"
@@ -40,10 +40,17 @@
         </div>
 
         <div>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary">Submit(Backend)</button>
+
         </div>
 
     </form>
+    <h3 class="mt-2">UI Example</h3>
+    <p class="text-muted">Using JQuery</p>
+    <button class="btn btn-secondary"
+            onclick="getSortedParts()">
+        Get(Frontend)
+    </button>
     <div class="mt-5" id="result">
 
     </div>
@@ -51,6 +58,83 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
         crossorigin="anonymous"></script>
+<script>
+    function getSortedParts() {
+        const productId = document.getElementById('product').value;
+
+        $.ajax({
+            url: `https://api.psrestful.com/extra/v1/products/${productId}/sorted-parts`,
+            type: 'GET',
+            data: {
+                "pub_api_key": 'dd820c5d3f9d40ed179ddc289e6dbe07',
+                "days": '60'
+            },
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+            success: function (result) {
+                const count = result.count;
+                const parts = result.parts;
+                const resultDiv = document.getElementById('result');
+
+                // Build the HTML dynamically
+                let html = `
+    <div class="container mt-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white text-center">
+                <h3>Parts Sorted</h3>
+            </div>
+            <div class="card-body">
+                <p>Total Parts: <strong>${count}</strong></p>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead class="thead-light">
+                        <tr>
+                            <th>Part ID</th>
+                            <th>Color</th>
+                            <th>Size</th>
+                            <th class="text-end">Total Sales</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+    `;
+
+                // Add rows for each part
+                parts.forEach(part => {
+                    html += `
+            <tr>
+                <td>${part.part_id}</td>
+                <td>${part.color}</td>
+                <td>${part.size || "OSFA"}</td>
+                <td class="text-end">${part.total_sales}</td>
+            </tr>
+        `;
+                });
+
+                // Close table and divs
+                html += `
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    `;
+
+                // Update the resultDiv content
+                resultDiv.innerHTML = html;
+            }
+
+            ,
+            error: function (error) {
+                console.log(error);
+            }
+        })
+        ;
+
+    }
+</script>
 
 </body>
 </html>
