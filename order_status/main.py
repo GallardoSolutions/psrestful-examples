@@ -26,7 +26,7 @@ async def home(request: Request):
 async def orders(supplier_code: str, environment: str, status_timestamp: datetime):
     url = f"https://api.psrestful.com/v1.0.0/suppliers/{supplier_code}/order-status-details/"
     data = {
-        'query_type': 3,
+        'query_type': 'LAST_UPDATE_SEARCH',
         'status_timestamp': str(status_timestamp),
         'environment': environment
     }

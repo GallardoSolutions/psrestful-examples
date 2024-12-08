@@ -15,7 +15,7 @@ But the main focus is on how to use `PSRESTful API` to check order status for a 
 We believe it will help you understand how easy is to integrate your backend to use `PSRESTful API` to check order 
 status for all suppliers we support.
 
-In our case we use the option to check order status based on query_type=3(Last Update Search) that allows to query 
+In our case we use the option to check order status based on query_type=LAST_UPDATE_SEARCH(3) that allows to query 
 based on all orders with an update time greater than the value specified in `statusTimeStamp`. In our 
 [Standards documentation](https://docs.psrestful.com/standards/) you can find more information about this option.
 
